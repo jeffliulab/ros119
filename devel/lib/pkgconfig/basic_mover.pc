@@ -1,0 +1,8 @@
+prefix=/my_ros_data/catkin_ws/devel
+
+Name: basic_mover
+Description: Description of basic_mover
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

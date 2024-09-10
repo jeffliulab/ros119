@@ -1,0 +1,8 @@
+prefix=/my_ros_data/catkin_ws/devel
+
+Name: samples
+Description: Description of samples
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

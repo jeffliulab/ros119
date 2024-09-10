@@ -1,0 +1,8 @@
+prefix=/my_ros_data/catkin_ws/devel
+
+Name: fiducial_nav
+Description: Description of fiducial_nav
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
