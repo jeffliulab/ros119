@@ -60,6 +60,9 @@ class MyOdom:
         p.y = self.yaw
         p.z = 0.0 # Point message has x,y,z three float64 variables
         self.my_odom_pub.publish(p)
+
+        #rate = rospy.Rate(10)
+        #rate.sleep()
         
         
 if __name__ == '__main__':

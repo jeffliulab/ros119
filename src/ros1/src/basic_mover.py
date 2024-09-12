@@ -9,11 +9,13 @@ class BasicMover:
     def __init__(self):
         self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         self.my_odom_sub = rospy.Subscriber('my_odom', Point, self.my_odom_cb)
-        # Current heading of the robot.
-        self.cur_yaw = None
-        # Current distance moved of the robot.
-        self.start_distance = None
-        self.moved_distance = 0.0
+        
+        # 因为遇到了bug，所以这里修改constructor，初始化值也依赖my_odom推送过来的数据
+        # Current distance moved and heading of the robot.
+        initial_odom = rospy.wait_for_message('my_odom', Point)
+        self.start_distance = initial_odom.x
+        self.moved_distance = initial_odom.x 
+        self.cur_yaw = initial_odom.y
 
     def my_odom_cb(self, msg):
         """Callback function for `self.my_odom_sub`."""
@@ -31,18 +33,27 @@ class BasicMover:
         twist = Twist()
         rate = rospy.Rate(10)
 
-        #如果误差角度很小，停止旋转
         while not rospy.is_shutdown():
             delta_yaw = target_yaw - self.cur_yaw
+
+            # 打印调试信息，确保 delta_yaw 正常更新 ###########
+            rospy.loginfo(f"Delta yaw: {delta_yaw:.3f}, Current Yaw: {self.cur_yaw:.3f}, Target Yaw: {target_yaw:.3f}")
+
+
+            #如果误差角度很小，停止旋转
             if abs(delta_yaw) < 0.05:
                 twist.angular.z = 0.0
                 self.cmd_vel_pub.publish(twist)
+                #########################################
+                rospy.loginfo("旋转完毕 ROTATION COMPLETE")
                 break 
             
             # 根据偏差方向旋转
-            twist.angular.z = 0.1 if delta_yaw >0 else -0.1
+            twist.angular.z = 0.3 if delta_yaw >0 else -0.3
             self.cmd_vel_pub.publish(twist)
             rate.sleep() 
+        
+        #### 提升点：这里可以改成动态调整角速度
 
     def move_forward(self, target_dist):
         """Moves the robot forward by `target_dist`."""
@@ -54,17 +65,21 @@ class BasicMover:
         twist.linear.x = 0.1
         while not rospy.is_shutdown():
             # 计算当前距离相对于起点的变化
-            delta_distance = self.moved_distance - self.start_distance 
+            delta_distance = self.moved_distance - self.start_distance    
+            
+            # 打印调试信息，确保 delta_distance 正常更新 ###########
+            rospy.loginfo(f"Delta Distance: {delta_distance:.3f} of {target_dist:.3f}")
+
             # 如果移动的距离达到目标，则停止移动
             if delta_distance >= target_dist:
+                twist.linear.x = 0.0
+                self.cmd_vel_pub.publish(twist)
+                rospy.loginfo("到达目标距离 REACHED TARGET DISTANCE")
                 break 
             # 否则继续移动
             self.cmd_vel_pub.publish(twist)
             rate.sleep()
-        
-        # 停止移动
-        twist.linear.x = 0.0
-        self.cmd_vel_pub.publish(twist)
+    
             
 
 
