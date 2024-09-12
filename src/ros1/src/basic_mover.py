@@ -45,7 +45,7 @@ class BasicMover:
                 break 
             
             # Rotate according to deviation direction
-            twist.angular.z = 0.3 if delta_yaw >0 else -0.3 # Angular velocity
+            twist.angular.z = 0.2 if delta_yaw >0 else -0.2 # Angular velocity
             self.cmd_vel_pub.publish(twist)
             rate.sleep() 
         
@@ -56,7 +56,7 @@ class BasicMover:
 
         self.start_distance = self.moved_distance
 
-        twist.linear.x = 0.3    # Linear speed
+        twist.linear.x = 0.1    # Linear speed
 
         while not rospy.is_shutdown():
             # Calculate the change in current distance relative to the starting point
