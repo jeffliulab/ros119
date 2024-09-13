@@ -4,6 +4,14 @@ import rospy
 from geometry_msgs.msg import Point, Pose, Twist
 from tf.transformations import euler_from_quaternion
 
+'''
+版本v1中仍面临的问题：
+1、依靠度数而非pi的旋转无法实现
+2、无法正确判断转向右还是转向左（可能会出现需要左转90但实际右转270的问题）
+'''
+
+
+
 # BasicMover
 class BasicMover:
     def __init__(self):
