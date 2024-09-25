@@ -3,17 +3,9 @@ import math
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
-
-
-
 '''
-PA2_Wall Follower Assignment
-
-Demo Represents Through:
-(1) roslaunch turtlebot3_gazebo turtlebot3_stage_1.launch
-(2) roslaunch turtlebot3_gazebo turtlebot3_gazebo_rviz.launch
-(3) Put the robot where you want it to start
-(4) rosrun wall_follower wall_follower.py
+Video Address:
+https://drive.google.com/file/d/1AvAN7iIaqyN2XfOrDdxgwjHq7ksBSzno/view?usp=sharing
 '''
 
 class WallFollower:
@@ -60,6 +52,7 @@ class WallFollower:
             self.closest_direction = -1 # -1 means there is no closest direction
 
         # Four direction's distance
+        # I try to use these variables to solve the inner corner problem, but didn't get a complete solution before the submission ddl...
         self.foreward_distance = self.get_distance_at_direction(msg, 0)     # 0 is foreward_distance
         self.left_distance = self.get_distance_at_direction(msg, 90)        # 90 is left_distance
         self.backward_distance = self.get_distance_at_direction(msg, 180)   # 180 is backward_distance
@@ -80,7 +73,7 @@ class WallFollower:
         # Condition < 0 >
         # Algorithm of following wall inner the dead zone (including inner corner)
         # Situation(6): The wall has an inside corner
-        # (THIS PART NEEDS UPDATE AND THINKING MORE...)
+        # THIS PART IS NOT FINISHED YET, WILL CONITNUE UPDATING AFTER SUBMITTING
         if self.closest_obstacle_dist < self.dead_distance:
             # This part is handling situations of too close to the wall and meet the inner corner
             # Detect this situation first, when detected, keep away from such situation
@@ -140,8 +133,12 @@ class WallFollower:
             # if there is no wall near the robot, draw big circle
             # if still no wall, draw another big circle (another direction)
             # if still no wall, draw bigger circle...
-            
+            # THIS PART IS NOT FINISHED YET, WILL CONITNUE UPDATING AFTER SUBMITTING
+            twist.linear.x = 0.2 
+            twist.angular.z = 0.3 
+        
         self.cmd_vel_pub.publish(twist)
+
 
 if __name__ == '__main__':
     rospy.init_node('wall_follower')
